@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ball Up - Shop</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #16213e 100%);
+            font-family: 'Orbitron', monospace;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #8a2be2, #da70d6, #9370db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(138, 43, 226, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.8)); }
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(138, 43, 226, 0.8);
+            border: 2px solid #da70d6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(218, 112, 214, 0.8);
+            box-shadow: 0 0 15px rgba(218, 112, 214, 0.6);
+        }
+        
+        .coins-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .shop-categories {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .category-btn {
+            background: rgba(138, 43, 226, 0.3);
+            border: 2px solid #8a2be2;
+            color: #da70d6;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .category-btn.active {
+            background: rgba(138, 43, 226, 0.8);
+            border-color: #da70d6;
+            color: white;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.6);
+        }
+        
+        .category-btn:hover {
+            background: rgba(138, 43, 226, 0.6);
+        }
+        
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .shop-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+        
+        .shop-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(138, 43, 226, 0.8);
+        }
+        
+        .shop-item.owned {
+            border-color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+        
+        .shop-item.premium {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .item-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
+        }
+        
+        .item-name {
+            font-size: 1.3rem;
+            color: #da70d6;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .item-description {
+            color: #8a2be2;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        
+        .item-price {
+            font-size: 1.2rem;
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .item-rarity {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+        
+        .rarity-common { background: #6b7280; }
+        .rarity-rare { background: #3b82f6; }
+        .rarity-epic { background: #8b5cf6; }
+        .rarity-legendary { background: #f59e0b; }
+        .rarity-mythic { background: #ef4444; }
+        
+        .buy-btn {
+            background: rgba(138, 43, 226, 0.8);
+            border: 2px solid #da70d6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .buy-btn:hover {
+            background: rgba(218, 112, 214, 0.8);
+            box-shadow: 0 0 15px rgba(218, 112, 214, 0.6);
+        }
+        
+        .buy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .buy-btn.owned {
+            background: rgba(74, 222, 128, 0.8);
+            border-color: #4ade80;
+        }
+        
+        .buy-btn.owned:hover {
+            background: rgba(74, 222, 128, 0.6);
+        }
+        
+        .premium-required {
+            background: rgba(255, 215, 0, 0.8);
+            border-color: #ffd700;
+            color: #000;
+        }
+        
+        .premium-required:hover {
+            background: rgba(255, 215, 0, 0.6);
+        }
+        
+        .featured-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+        
+        .featured-title {
+            color: #ffd700;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .daily-deals {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #ef4444;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+        }
+        
+        .deals-title {
+            color: #ef4444;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .deal-timer {
+            color: #ef4444;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .shop-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .shop-categories {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .coins-display {
+                position: static;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="lobby.html" class="back-btn">← Back to Lobby</a>
+    
+    <div class="coins-display" id="coinsDisplay">
+        💰 Coins: 0
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="title">BALL SHOP</div>
+        </div>
+        
+        <div class="featured-section">
+            <div class="featured-title">⭐ Featured Item</div>
+            <div class="shop-grid">
+                <div class="shop-item premium">
+                    <div class="item-preview" style="background: linear-gradient(45deg, #ffd700, #ffed4e);">⚡</div>
+                    <div class="item-name">Lightning Ball</div>
+                    <div class="item-description">Exclusive premium ball with electric effects and speed boost</div>
+                    <div class="item-rarity rarity-legendary">Legendary</div>
+                    <div class="item-price">Premium Only</div>
+                    <button class="buy-btn premium-required" onclick="buyItem('lightning_ball', 0, true)">Premium Required</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="daily-deals">
+            <div class="deals-title">🔥 Daily Deals</div>
+            <div class="deal-timer" id="dealTimer">Resets in: 12:34:56</div>
+            <div class="shop-grid">
+                <div class="shop-item">
+                    <div class="item-preview" style="background: linear-gradient(45deg, #ff6b6b, #ee5a52);">🔴</div>
+                    <div class="item-name">Fire Ball</div>
+                    <div class="item-description">Blazing red ball with fire trail effects</div>
+                    <div class="item-rarity rarity-rare">Rare</div>
+                    <div class="item-price">150 💰 <strike style="color: #666;">200 💰</strike></div>
+                    <button class="buy-btn" onclick="buyItem('fire_ball', 150)">Buy Now</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="shop-categories">
+            <button class="category-btn active" onclick="showCategory('balls')">Balls</button>
+            <button class="category-btn" onclick="showCategory('trails')">Trails</button>
+            <button class="category-btn" onclick="showCategory('powerups')">Power-ups</button>
+            <button class="category-btn" onclick="showCategory('titles')">Titles</button>
+        </div>
+        
+        <div class="shop-grid" id="shopGrid">
+            <!-- Shop items will be populated here -->
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        let currentUser = null;
+        let authToken = null;
+        let currentCategory = 'balls';
+        let ownedItems = [];
+        
+        const shopItems = {
+            balls: [
+                {
+                    id: 'default_ball',
+                    name: 'Classic Ball',
+                    description: 'The original ball that started it all',
+                    price: 0,
+                    rarity: 'common',
+                    preview: '⚪',
+                    gradient: 'linear-gradient(45deg, #8a2be2, #da70d6)',
+                    owned: true
+                },
+                {
+                    id: 'rainbow_ball',
+                    name: 'Rainbow Ball',
+                    description: 'Colorful ball that cycles through rainbow colors',
+                    price: 100,
+                    rarity: 'rare',
+                    preview: '🌈',
+                    gradient: 'linear-gradient(45deg, #ff0000, #00ff00, #0000ff)'
+                },
+                {
+                    id: 'gold_ball',
+                    name: 'Golden Ball',
+                    description: 'Luxurious golden ball for the elite players',
+                    price: 500,
+                    rarity: 'epic',
+                    preview: '🟡',
+                    gradient: 'linear-gradient(45deg, #ffd700, #ffed4e)'
+                },
+                {
+                    id: 'diamond_ball',
+                    name: 'Diamond Ball',
+                    description: 'Sparkling diamond ball with crystal effects',
+                    price: 1000,
+                    rarity: 'legendary',
+                    preview: '💎',
+                    gradient: 'linear-gradient(45deg, #b9f2ff, #ffffff)'
+                },
+                {
+                    id: 'shadow_ball',
+                    name: 'Shadow Ball',
+                    description: 'Mysterious dark ball with shadow trail',
+                    price: 750,
+                    rarity: 'epic',
+                    preview: '⚫',
+                    gradient: 'linear-gradient(45deg, #000000, #333333)'
+                }
+            ],
+            trails: [
+                {
+                    id: 'fire_trail',
+                    name: 'Fire Trail',
+                    description: 'Blazing fire trail that follows your ball',
+                    price: 200,
+                    rarity: 'rare',
+                    preview: '🔥',
+                    gradient: 'linear-gradient(45deg, #ff6b6b, #ee5a52)'
+                },
+                {
+                    id: 'ice_trail',
+                    name: 'Ice Trail',
+                    description: 'Freezing ice crystals trail',
+                    price: 200,
+                    rarity: 'rare',
+                    preview: '❄️',
+                    gradient: 'linear-gradient(45deg, #74c0fc, #339af0)'
+                },
+                {
+                    id: 'star_trail',
+                    name: 'Star Trail',
+                    description: 'Magical star particles trail',
+                    price: 400,
+                    rarity: 'epic',
+                    preview: '⭐',
+                    gradient: 'linear-gradient(45deg, #ffd43b, #fab005)'
+                }
+            ],
+            powerups: [
+                {
+                    id: 'extra_jump',
+                    name: 'Extra Jump Pack',
+                    description: 'Start each game with an extra jump power-up',
+                    price: 50,
+                    rarity: 'common',
+                    preview: '🦘',
+                    gradient: 'linear-gradient(45deg, #51cf66, #40c057)'
+                },
+                {
+                    id: 'shield_start',
+                    name: 'Shield Starter',
+                    description: 'Begin every game with a protective shield',
+                    price: 100,
+                    rarity: 'rare',
+                    preview: '🛡️',
+                    gradient: 'linear-gradient(45deg, #74c0fc, #339af0)'
+                }
+            ],
+            titles: [
+                {
+                    id: 'jumper',
+                    name: 'Sky Jumper',
+                    description: 'Show off your jumping skills',
+                    price: 150,
+                    rarity: 'common',
+                    preview: '🌤️',
+                    gradient: 'linear-gradient(45deg, #74c0fc, #339af0)'
+                },
+                {
+                    id: 'champion',
+                    name: 'Champion',
+                    description: 'For the ultimate winners',
+                    price: 1000,
+                    rarity: 'legendary',
+                    preview: '🏆',
+                    gradient: 'linear-gradient(45deg, #ffd43b, #fab005)'
+                }
+            ]
+        };
+        
+        window.addEventListener('load', async () => {
+            await loadUserData();
+            updateCoinsDisplay();
+            showCategory('balls');
+            startDealTimer();
+        });
+        
+        async function loadUserData() {
+            const savedUser = localStorage.getItem('currentUser');
+            const savedToken = localStorage.getItem('authToken');
+            
+            if (!savedUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(savedUser);
+            authToken = savedToken;
+            
+            // Load owned items (mock data for now)
+            ownedItems = ['default_ball'];
+        }
+        
+        function updateCoinsDisplay() {
+            document.getElementById('coinsDisplay').textContent = `💰 Coins: ${currentUser.coins || 0}`;
+        }
+        
+        function showCategory(category) {
+            currentCategory = category;
+            
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Display items
+            displayItems(shopItems[category]);
+        }
+        
+        function displayItems(items) {
+            const container = document.getElementById('shopGrid');
+            
+            container.innerHTML = items.map(item => {
+                const isOwned = ownedItems.includes(item.id);
+                const canAfford = (currentUser.coins || 0) >= item.price;
+                const isPremiumRequired = item.premiumOnly && !currentUser.premium;
+                
+                return `
+                    <div class="shop-item ${isOwned ? 'owned' : ''} ${item.premiumOnly ? 'premium' : ''}">
+                        <div class="item-preview" style="background: ${item.gradient};">${item.preview}</div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-description">${item.description}</div>
+                        <div class="item-rarity rarity-${item.rarity}">${item.rarity.charAt(0).toUpperCase() + item.rarity.slice(1)}</div>
+                        <div class="item-price">${item.price === 0 ? 'Free' : item.price + ' 💰'}</div>
+                        <button class="buy-btn ${isOwned ? 'owned' : ''} ${isPremiumRequired ? 'premium-required' : ''}" 
+                                onclick="buyItem('${item.id}', ${item.price}, ${item.premiumOnly || false})"
+                                ${isOwned || (!canAfford && !isPremiumRequired) ? 'disabled' : ''}>
+                            ${isOwned ? 'Owned' : isPremiumRequired ? 'Premium Required' : !canAfford ? 'Not Enough Coins' : 'Buy Now'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        async function buyItem(itemId, price, premiumRequired = false) {
+            if (currentUser.username === 'Guest') {
+                alert('Please create an account to purchase items!');
+                return;
+            }
+            
+            if (ownedItems.includes(itemId)) {
+                alert('You already own this item!');
+                return;
+            }
+            
+            if (premiumRequired && !currentUser.premium) {
+                alert('This item requires premium membership!');
+                return;
+            }
+            
+            if ((currentUser.coins || 0) < price) {
+                alert('Not enough coins!');
+                return;
+            }
+            
+            if (confirm(`Purchase this item for ${price} coins?`)) {
+                try {
+                    // Mock purchase - in real implementation, this would call the API
+                    currentUser.coins -= price;
+                    ownedItems.push(itemId);
+                    
+                    // Update local storage
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    
+                    updateCoinsDisplay();
+                    showCategory(currentCategory);
+                    
+                    alert('Item purchased successfully!');
+                } catch (error) {
+                    console.error('Purchase error:', error);
+                    alert('Error purchasing item. Please try again.');
+                }
+            }
+        }
+        
+        function startDealTimer() {
+            function updateTimer() {
+                const now = new Date();
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                
+                const timeLeft = tomorrow - now;
+                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                
+                document.getElementById('dealTimer').textContent = 
+                    `Resets in: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+    </script>
+</body>
+</html>
