@@ -394,39 +394,8 @@
         const loadingScreen = document.getElementById("loadingScreen");
         const loadingBar = document.getElementById("loadingBar");
         const loadingText = document.getElementById("loadingText");
-
-        // DPI Scaling
-        function setupCanvas() {
-            const dpr = window.devicePixelRatio || 1;
-            canvas.width = 400 * dpr;
-            canvas.height = 600 * dpr;
-            canvas.style.width = '400px';
-            canvas.style.height = '600px';
-            if (ctx) {
-                ctx.scale(dpr, dpr);
-                console.log(`Canvas initialized with DPR: ${dpr}`);
-            } else {
-                console.error("Failed to get 2D context for canvas");
-            }
-        }
-
-        // Font loading check
-        function fontLoadingCheck() {
-            const testDiv = document.createElement('div');
-            testDiv.style.fontFamily = 'Orbitron, monospace';
-            testDiv.style.visibility = 'hidden';
-            testDiv.innerText = 'test';
-            document.body.appendChild(testDiv);
-            const computedFont = window.getComputedStyle(testDiv).fontFamily;
-            document.body.removeChild(testDiv);
-            if (!computedFont.includes('Orbitron')) {
-                console.warn("Orbitron font failed to load, using monospace fallback");
-            } else {
-                console.log("Orbitron font loaded successfully");
-            }
-        }
-
-        // Game constants
+        
+        // Game constants - FIXED: Faster response times
         const GRAVITY = 0.35;
         const JUMP_FORCE = -12;
         let SLIDE_SPEED = 6;
@@ -797,14 +766,7 @@
         
         async function initAudio() {
             try {
-                if (!window.AudioContext && !window.webkitAudioContext) {
-                    console.warn("AudioContext not supported, skipping audio");
-                    updateLoadingProgress();
-                    updateLoadingProgress();
-                    return;
-                }
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                console.log("AudioContext initialized");
                 
                 jumpBuffer = createBeepSound(440, 0.1);
                 landBuffer = createBeepSound(330, 0.1);
@@ -816,7 +778,7 @@
                 updateLoadingProgress();
                 
             } catch (error) {
-                console.error("Audio initialization failed:", error);
+                console.log("Audio loading failed, continuing without sound");
                 updateLoadingProgress();
                 updateLoadingProgress();
             }
@@ -851,7 +813,6 @@
             gainNode.connect(audioContext.destination);
             
             backgroundMusic = { oscillator1, oscillator2, gainNode };
-            console.log("Background music created");
         }
         
         function playSound(buffer) {
@@ -868,11 +829,10 @@
         
         function updateLoadingProgress() {
             assetsLoaded++;
-            console.log(`Assets loaded: ${assetsLoaded}/${totalAssets}`);
             const progress = (assetsLoaded / totalAssets) * 100;
             loadingBar.style.width = progress + '%';
             
-            if (assetsLoaded >= totalAssets) {
+            if (assetsLoaded === totalAssets) {
                 loadingText.textContent = 'Ready to dominate!';
                 setTimeout(() => {
                     loadingScreen.classList.add('hidden');
@@ -912,7 +872,6 @@
             }
             ctx.shadowBlur = 0;
             
-            console.log(`Created background for level ${level}`);
             return canvas;
         }
         
@@ -976,7 +935,6 @@
                     ));
                 }
             }
-            console.log("Platforms initialized");
         }
         
         function drawBackground() {
@@ -1205,16 +1163,16 @@
                 ctx.shadowBlur = 20;
                 ctx.shadowColor = '#da70d6';
                 ctx.fillStyle = '#da70d6';
-                ctx.font = "bold 36px Orbitron, monospace";
+                ctx.font = "bold 36px Orbitron";
                 ctx.textAlign = "center";
                 ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 80);
                 
-                ctx.font = "20px Orbitron, monospace";
+                ctx.font = "20px Orbitron";
                 ctx.fillText(`Height: ${Math.floor(player.score)}`, canvas.width / 2, canvas.height / 2 - 30);
                 ctx.fillText(`Best: ${Math.floor(highScore)}`, canvas.width / 2, canvas.height / 2);
                 ctx.fillText(`Coins Earned: ${Math.floor(player.score / 10)}`, canvas.width / 2, canvas.height / 2 + 30);
                 
-                ctx.font = "16px Orbitron, monospace";
+                ctx.font = "16px Orbitron";
                 ctx.fillStyle = '#8a2be2';
                 ctx.fillText("Tap to Continue", canvas.width / 2, canvas.height / 2 + 70);
                 ctx.restore();
@@ -1222,10 +1180,6 @@
         }
         
         function gameLoop() {
-            if (!ctx) {
-                console.error("Canvas context lost, stopping game loop");
-                return;
-            }
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             drawBackground();
@@ -1313,7 +1267,6 @@
             lastJumpTime = 0;
             document.getElementById('levelText').textContent = levels[0].name;
             updatePowerupDisplay();
-            console.log("Game reset");
         }
         
         function endGame() {
@@ -1329,7 +1282,6 @@
             }
             
             updateUI();
-            console.log("Game ended");
         }
         
         function updateUI() {
@@ -1359,23 +1311,21 @@
             
             try {
                 const response = await fetch(`${API_BASE}${endpoint}`, options);
-                console.log(`API call to ${endpoint}: ${response.status}`);
                 return await response.json();
             } catch (error) {
                 console.error('API Error:', error);
-                return { error: 'Network error', data: null };
+                return { error: 'Network error' };
             }
         }
         
         async function submitScore(score, coinsEarned) {
             if (!currentUser || currentUser.username === 'Guest') return;
             
-            const result = await apiCall('/game/score', 'POST', { 
+            await apiCall('/game/score', 'POST', { 
                 score, 
                 coinsEarned,
                 gameMode: gameMode 
             });
-            console.log("Score submission result:", result);
         }
         
         function showVictoryScreen(stats) {
@@ -1399,13 +1349,11 @@
         // Event listeners
         document.getElementById('musicBtn').addEventListener('click', () => {
             // Toggle music logic here
-            console.log("Music button clicked");
         });
         
         document.getElementById('pauseBtn').addEventListener('click', () => {
             gamePaused = !gamePaused;
             document.getElementById('pauseBtn').textContent = gamePaused ? '▶️' : '⏸️';
-            console.log("Game paused:", gamePaused);
         });
         
         // Mobile controls
@@ -1514,38 +1462,22 @@
                 userRank = currentUser.rank || 'Bronze';
                 userHonor = currentUser.honor || 100;
             } else {
-                currentUser = { username: 'Guest', premium: false, coins: 0, rank: 'Bronze', honor: 100 };
+                currentUser = { username: 'Guest', premium: false };
             }
             
             initializePlatforms();
             updateUI();
-            console.log("Initialization complete", { currentUser, userCoins, userRank });
         }
         
         function startGame() {
-            console.log("Starting game...");
             init();
             gameStarted = true;
-            
-            // Test canvas rendering
-            if (ctx) {
-                ctx.fillStyle = "red";
-                ctx.fillRect(0, 0, 400, 600);
-                setTimeout(() => {
-                    gameLoop();
-                }, 500); // Brief delay to see test render
-            } else {
-                console.error("Canvas context not available, cannot start game");
-            }
+            gameLoop();
         }
         
-        // Start initialization after DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            setupCanvas();
-            fontLoadingCheck();
-            initAudio();
-            updateLoadingProgress();
-        });
+        // Start initialization
+        initAudio();
+        updateLoadingProgress();
     </script>
 </body>
 </html>
