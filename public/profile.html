@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ball Up - Profile</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #16213e 100%);
+            font-family: 'Orbitron', monospace;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #8a2be2, #da70d6, #9370db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(138, 43, 226, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.8)); }
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(138, 43, 226, 0.8);
+            border: 2px solid #da70d6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(218, 112, 214, 0.8);
+            box-shadow: 0 0 15px rgba(218, 112, 214, 0.6);
+        }
+        
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .profile-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+            text-align: center;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #8a2be2, #da70d6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.8);
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            color: #da70d6;
+            margin-bottom: 10px;
+        }
+        
+        .premium-badge {
+            color: #ffd700;
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+        
+        .profile-rank {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .rank-bronze { background: #cd7f32; }
+        .rank-silver { background: #c0c0c0; color: #000; }
+        .rank-gold { background: #ffd700; color: #000; }
+        .rank-platinum { background: #e5e4e2; color: #000; }
+        .rank-diamond { background: #b9f2ff; color: #000; }
+        .rank-admin { background: #ff0000; }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(138, 43, 226, 0.2);
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #da70d6;
+        }
+        
+        .stat-label {
+            color: #8a2be2;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .stats-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+        
+        .section-title {
+            color: #da70d6;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .detailed-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .achievements-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .achievement-item {
+            background: rgba(138, 43, 226, 0.2);
+            border: 2px solid #8a2be2;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-item.unlocked {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .achievement-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.5);
+        }
+        
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .achievement-name {
+            color: #da70d6;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .achievement-desc {
+            color: #8a2be2;
+            font-size: 0.8rem;
+        }
+        
+        .friend-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .btn {
+            background: rgba(138, 43, 226, 0.8);
+            border: 2px solid #da70d6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            background: rgba(218, 112, 214, 0.8);
+            box-shadow: 0 0 15px rgba(218, 112, 214, 0.6);
+        }
+        
+        .btn.success {
+            background: rgba(34, 197, 94, 0.8);
+            border-color: #4ade80;
+        }
+        
+        .btn.success:hover {
+            background: rgba(74, 222, 128, 0.8);
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.6);
+        }
+        
+        .loading {
+            text-align: center;
+            color: #da70d6;
+            font-size: 1.2rem;
+            margin: 50px 0;
+        }
+        
+        .match-history {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+        
+        .match-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .match-item:hover {
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 8px;
+        }
+        
+        .match-result {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        .result-win {
+            background: rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+        }
+        
+        .result-loss {
+            background: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .profile-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .detailed-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .achievements-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .friend-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="lobby.html" class="back-btn">← Back to Lobby</a>
+    
+    <div class="container">
+        <div class="header">
+            <div class="title">PLAYER PROFILE</div>
+        </div>
+        
+        <div class="profile-grid">
+            <div class="profile-card">
+                <div class="profile-avatar" id="profileAvatar">?</div>
+                <div class="profile-name" id="profileName">Loading...</div>
+                <div class="profile-rank" id="profileRank">Unranked</div>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalScore">0</div>
+                        <div class="stat-label">Total Score</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="bestScore">0</div>
+                        <div class="stat-label">Best Score</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="gamesPlayed">0</div>
+                        <div class="stat-label">Games Played</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="winRate">0%</div>
+                        <div class="stat-label">Win Rate</div>
+                    </div>
+                </div>
+                
+                <div class="friend-actions" id="friendActions">
+                    <!-- Friend actions will be populated here -->
+                </div>
+            </div>
+            
+            <div class="stats-section">
+                <div class="section-title">Detailed Statistics</div>
+                <div class="detailed-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="coins">0</div>
+                        <div class="stat-label">💰 Coins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="honor">100</div>
+                        <div class="stat-label">🏅 Honor</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="wins">0</div>
+                        <div class="stat-label">🏆 Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="losses">0</div>
+                        <div class="stat-label">💀 Losses</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="avgScore">0</div>
+                        <div class="stat-label">📊 Avg Score</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="joinDate">-</div>
+                        <div class="stat-label">📅 Joined</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="achievements-section">
+            <div class="section-title">🏆 Achievements</div>
+            <div class="achievements-grid" id="achievementsGrid">
+                <div class="loading">Loading achievements...</div>
+            </div>
+        </div>
+        
+        <div class="match-history">
+            <div class="section-title">📈 Recent Matches</div>
+            <div id="matchHistoryContent">
+                <div class="loading">Loading match history...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://reikermf-bxup.hf.space/api';
+        let currentUser = null;
+        let authToken = null;
+        let profileUser = null;
+        
+        window.addEventListener('load', async () => {
+            const savedUser = localStorage.getItem('currentUser');
+            const savedToken = localStorage.getItem('authToken');
+            
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                authToken = savedToken;
+            }
+            
+            // Get username from URL params or use current user
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username') || (currentUser ? currentUser.username : null);
+            
+            if (!username) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            await loadProfile(username);
+            await loadAchievements();
+            await loadMatchHistory(username);
+        });
+        
+        async function loadProfile(username) {
+            try {
+                let userData;
+                
+                if (currentUser && username === currentUser.username) {
+                    // Load own profile
+                    const response = await fetch(`${API_BASE}/user/profile`, {
+                        headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {}
+                    });
+                    const data = await response.json();
+                    userData = data.success ? data.user : null;
+                } else {
+                    // Load other user's profile (public data only)
+                    userData = { username, rank: 'Bronze', coins: 0, honor: 100 }; // Placeholder
+                }
+                
+                if (userData) {
+                    profileUser = userData;
+                    displayProfile(userData);
+                    setupFriendActions(username);
+                } else {
+                    document.getElementById('profileName').textContent = 'User not found';
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('profileName').textContent = 'Error loading profile';
+            }
+        }
+        
+        function displayProfile(user) {
+            document.getElementById('profileAvatar').textContent = user.username.charAt(0).toUpperCase();
+            document.getElementById('profileName').innerHTML = user.username + (user.premium ? ' <span class="premium-badge">✓</span>' : '');
+            
+            const rankElement = document.getElementById('profileRank');
+            rankElement.textContent = user.rank || 'Unranked';
+            rankElement.className = `profile-rank rank-${(user.rank || 'bronze').toLowerCase()}`;
+            
+            document.getElementById('totalScore').textContent = user.totalScore || 0;
+            document.getElementById('bestScore').textContent = user.bestScore || 0;
+            document.getElementById('gamesPlayed').textContent = user.gamesPlayed || 0;
+            
+            const winRate = user.gamesPlayed > 0 ? Math.round((user.wins || 0) / user.gamesPlayed * 100) : 0;
+            document.getElementById('winRate').textContent = winRate + '%';
+            
+            document.getElementById('coins').textContent = user.coins || 0;
+            document.getElementById('honor').textContent = user.honor || 100;
+            document.getElementById('wins').textContent = user.wins || 0;
+            document.getElementById('losses').textContent = user.losses || 0;
+            
+            const avgScore = user.gamesPlayed > 0 ? Math.round((user.totalScore || 0) / user.gamesPlayed) : 0;
+            document.getElementById('avgScore').textContent = avgScore;
+            
+            if (user.createdAt) {
+                const joinDate = new Date(user.createdAt).toLocaleDateString();
+                document.getElementById('joinDate').textContent = joinDate;
+            }
+        }
+        
+        function setupFriendActions(username) {
+            const actionsContainer = document.getElementById('friendActions');
+            
+            if (!currentUser || currentUser.username === 'Guest') {
+                actionsContainer.innerHTML = '<a href="login.html" class="btn">Login to Add Friend</a>';
+                return;
+            }
+            
+            if (currentUser.username === username) {
+                actionsContainer.innerHTML = '<a href="friends.html" class="btn">Manage Friends</a>';
+                return;
+            }
+            
+            // For other users, show add friend button
+            actionsContainer.innerHTML = `
+                <button class="btn success" onclick="addFriend('${username}')">Add Friend</button>
+                <button class="btn" onclick="inviteToGame('${username}')">Invite to Game</button>
+            `;
+        }
+        
+        async function loadAchievements() {
+            const achievements = [
+                { id: 'first_jump', name: 'First Jump', desc: 'Complete your first jump', icon: '🦘', unlocked: true },
+                { id: 'height_100', name: 'Sky Walker', desc: 'Reach height of 100', icon: '🌤️', unlocked: true },
+                { id: 'height_500', name: 'Cloud Jumper', desc: 'Reach height of 500', icon: '☁️', unlocked: false },
+                { id: 'height_1000', name: 'Space Explorer', desc: 'Reach height of 1000', icon: '🚀', unlocked: false },
+                { id: 'powerup_master', name: 'Power Master', desc: 'Use 50 power-ups', icon: '⚡', unlocked: false },
+                { id: 'combo_king', name: 'Combo King', desc: 'Achieve 20x combo', icon: '🔥', unlocked: false },
+                { id: 'friend_maker', name: 'Social Butterfly', desc: 'Add 10 friends', icon: '👥', unlocked: false },
+                { id: 'winner', name: 'Champion', desc: 'Win 10 multiplayer matches', icon: '🏆', unlocked: false }
+            ];
+            
+            const container = document.getElementById('achievementsGrid');
+            container.innerHTML = achievements.map(achievement => `
+                <div class="achievement-item ${achievement.unlocked ? 'unlocked' : ''}">
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-name">${achievement.name}</div>
+                    <div class="achievement-desc">${achievement.desc}</div>
+                </div>
+            `).join('');
+        }
+        
+        async function loadMatchHistory(username) {
+            // Mock match history data
+            const matches = [
+                { date: '2024-01-15', mode: 'Solo', result: 'win', score: 1250 },
+                { date: '2024-01-14', mode: 'PvP', result: 'loss', score: 890 },
+                { date: '2024-01-14', mode: 'Solo', result: 'win', score: 1450 },
+                { date: '2024-01-13', mode: 'Battle Royale', result: 'win', score: 2100 },
+                { date: '2024-01-13', mode: 'PvP', result: 'win', score: 1100 }
+            ];
+            
+            const container = document.getElementById('matchHistoryContent');
+            
+            if (matches.length === 0) {
+                container.innerHTML = '<div class="empty-state">No matches played yet</div>';
+                return;
+            }
+            
+            container.innerHTML = matches.map(match => `
+                <div class="match-item">
+                    <div>
+                        <strong>${match.mode}</strong><br>
+                        <small>${match.date}</small>
+                    </div>
+                    <div>Score: ${match.score}</div>
+                    <div class="match-result result-${match.result}">
+                        ${match.result.toUpperCase()}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function addFriend(username) {
+            if (!authToken) {
+                alert('Please login to add friends');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/friends/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ friendUsername: username })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Friend request sent!');
+                } else {
+                    alert(data.message || 'Failed to send friend request');
+                }
+            } catch (error) {
+                console.error('Error adding friend:', error);
+                alert('Error sending friend request');
+            }
+        }
+        
+        function inviteToGame(username) {
+            alert(`Game invitation feature coming soon! You'll be able to invite ${username} to play together.`);
+        }
+    </script>
+</body>
+</html>
