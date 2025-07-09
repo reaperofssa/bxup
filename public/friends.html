@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ball Up - Friends</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #16213e 100%);
+            font-family: 'Orbitron', monospace;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #8a2be2, #da70d6, #9370db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(138, 43, 226, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.8)); }
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(138, 43, 226, 0.8);
+            border: 2px solid #da70d6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(218, 112, 214, 0.8);
+            box-shadow: 0 0 15px rgba(218, 112, 214, 0.6);
+        }
+        
+        .add-friend-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+        
+        .section-title {
+            color: #da70d6;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .add-friend-form {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .friend-input {
+            flex: 1;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+        }
+        
+        .friend-input:focus {
+            outline: none;
+            border-color: #da70d6;
+            box-shadow: 0 0 10px rgba(218, 112, 214, 0.5);
+        }
+        
+        .btn {
+            background: rgba(138, 43, 226, 0.8);
+            border: 2px solid #da70d6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: rgba(218, 112, 214, 0.8);
+            box-shadow: 0 0 15px rgba(218, 112, 214, 0.6);
+        }
+        
+        .btn.success {
+            background: rgba(34, 197, 94, 0.8);
+            border-color: #4ade80;
+        }
+        
+        .btn.success:hover {
+            background: rgba(74, 222, 128, 0.8);
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.6);
+        }
+        
+        .btn.danger {
+            background: rgba(239, 68, 68, 0.8);
+            border-color: #ef4444;
+        }
+        
+        .btn.danger:hover {
+            background: rgba(248, 113, 113, 0.8);
+            box-shadow: 0 0 15px rgba(248, 113, 113, 0.6);
+        }
+        
+        .friends-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .friends-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+        
+        .friend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .friend-item:hover {
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 8px;
+        }
+        
+        .friend-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .friend-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #8a2be2, #da70d6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .friend-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .friend-name {
+            color: #da70d6;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .friend-status {
+            font-size: 0.8rem;
+            color: #8a2be2;
+        }
+        
+        .status-online { color: #4ade80; }
+        .status-offline { color: #6b7280; }
+        .status-playing { color: #f59e0b; }
+        
+        .premium-badge {
+            color: #ffd700;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        
+        .friend-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #8a2be2;
+            font-style: italic;
+            padding: 40px 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #da70d6;
+            font-size: 1.2rem;
+            margin: 50px 0;
+        }
+        
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .message.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #4ade80;
+            color: #4ade80;
+        }
+        
+        .message.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .add-friend-form {
+                flex-direction: column;
+            }
+            
+            .friends-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .friend-item {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .friend-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="lobby.html" class="back-btn">← Back to Lobby</a>
+    
+    <div class="container">
+        <div class="header">
+            <div class="title">FRIENDS</div>
+        </div>
+        
+        <div class="add-friend-section">
+            <div class="section-title">Add Friend</div>
+            <div class="add-friend-form">
+                <input type="text" class="friend-input" id="friendUsername" placeholder="Enter username">
+                <button class="btn" onclick="addFriend()">Add Friend</button>
+            </div>
+            <div id="addFriendMessage"></div>
+        </div>
+        
+        <div class="friends-grid">
+            <div class="friends-section">
+                <div class="section-title">Friends</div>
+                <div id="friendsList">
+                    <div class="loading">Loading friends...</div>
+                </div>
+            </div>
+            
+            <div class="friends-section">
+                <div class="section-title">Friend Requests</div>
+                <div id="friendRequestsList">
+                    <div class="loading">Loading requests...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://reikermf-bxup.hf.space/api';
+        let currentUser = null;
+        let authToken = null;
+        
+        window.addEventListener('load', async () => {
+            await loadUserData();
+            await loadFriends();
+            await loadFriendRequests();
+        });
+        
+        async function loadUserData() {
+            const savedUser = localStorage.getItem('currentUser');
+            const savedToken = localStorage.getItem('authToken');
+            
+            if (!savedUser || !savedToken) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(savedUser);
+            authToken = savedToken;
+            
+            if (currentUser.username === 'Guest') {
+                showMessage('addFriendMessage', 'Please create an account to use the friends system!', 'error');
+                document.getElementById('friendsList').innerHTML = '<div class="empty-state">Create an account to add friends</div>';
+                document.getElementById('friendRequestsList').innerHTML = '<div class="empty-state">Create an account to receive friend requests</div>';
+                return;
+            }
+        }
+        
+        async function loadFriends() {
+            if (currentUser.username === 'Guest') return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/friends/list`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayFriends(data.friends);
+                } else {
+                    document.getElementById('friendsList').innerHTML = '<div class="empty-state">Error loading friends</div>';
+                }
+            } catch (error) {
+                console.error('Error loading friends:', error);
+                document.getElementById('friendsList').innerHTML = '<div class="empty-state">Error loading friends</div>';
+            }
+        }
+        
+        async function loadFriendRequests() {
+            if (currentUser.username === 'Guest') return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/friends/requests`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayFriendRequests(data.requests);
+                } else {
+                    document.getElementById('friendRequestsList').innerHTML = '<div class="empty-state">Error loading requests</div>';
+                }
+            } catch (error) {
+                console.error('Error loading friend requests:', error);
+                document.getElementById('friendRequestsList').innerHTML = '<div class="empty-state">Error loading requests</div>';
+            }
+        }
+        
+        function displayFriends(friends) {
+            const container = document.getElementById('friendsList');
+            
+            if (friends.length === 0) {
+                container.innerHTML = '<div class="empty-state">No friends yet. Add some friends to get started!</div>';
+                return;
+            }
+            
+            container.innerHTML = friends.map(friend => `
+                <div class="friend-item">
+                    <div class="friend-info">
+                        <div class="friend-avatar">${friend.username.charAt(0).toUpperCase()}</div>
+                        <div class="friend-details">
+                            <div class="friend-name">
+                                ${friend.username}
+                                ${friend.premium ? '<span class="premium-badge">✓</span>' : ''}
+                            </div>
+                            <div class="friend-status status-${friend.status || 'offline'}">
+                                ${getStatusText(friend.status)}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="friend-actions">
+                        <button class="btn btn-small" onclick="viewProfile('${friend.username}')">Profile</button>
+                        <button class="btn btn-small" onclick="inviteToGame('${friend.username}')" ${friend.status !== 'online' ? 'disabled' : ''}>Invite</button>
+                        <button class="btn btn-small danger" onclick="removeFriend('${friend.username}')">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function displayFriendRequests(requests) {
+            const container = document.getElementById('friendRequestsList');
+            
+            if (requests.length === 0) {
+                container.innerHTML = '<div class="empty-state">No pending friend requests</div>';
+                return;
+            }
+            
+            container.innerHTML = requests.map(request => `
+                <div class="friend-item">
+                    <div class="friend-info">
+                        <div class="friend-avatar">${request.username.charAt(0).toUpperCase()}</div>
+                        <div class="friend-details">
+                            <div class="friend-name">
+                                ${request.username}
+                                ${request.premium ? '<span class="premium-badge">✓</span>' : ''}
+                            </div>
+                            <div class="friend-status">Wants to be friends</div>
+                        </div>
+                    </div>
+                    <div class="friend-actions">
+                        <button class="btn btn-small success" onclick="acceptFriendRequest('${request.username}')">Accept</button>
+                        <button class="btn btn-small danger" onclick="declineFriendRequest('${request.username}')">Decline</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getStatusText(status) {
+            switch (status) {
+                case 'online': return 'Online';
+                case 'playing': return 'In Game';
+                case 'offline': return 'Offline';
+                default: return 'Offline';
+            }
+        }
+        
+        async function addFriend() {
+            const username = document.getElementById('friendUsername').value.trim();
+            
+            if (!username) {
+                showMessage('addFriendMessage', 'Please enter a username!', 'error');
+                return;
+            }
+            
+            if (username === currentUser.username) {
+                showMessage('addFriendMessage', 'You cannot add yourself as a friend!', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/friends/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ friendUsername: username })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('addFriendMessage', 'Friend request sent!', 'success');
+                    document.getElementById('friendUsername').value = '';
+                } else {
+                    showMessage('addFriendMessage', data.message || 'Failed to send friend request', 'error');
+                }
+            } catch (error) {
+                console.error('Error adding friend:', error);
+                showMessage('addFriendMessage', 'Error sending friend request', 'error');
+            }
+        }
+        
+        async function acceptFriendRequest(username) {
+            try {
+                const response = await fetch(`${API_BASE}/friends/accept`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ friendUsername: username })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    await loadFriends();
+                    await loadFriendRequests();
+                } else {
+                    alert('Failed to accept friend request');
+                }
+            } catch (error) {
+                console.error('Error accepting friend request:', error);
+                alert('Error accepting friend request');
+            }
+        }
+        
+        async function declineFriendRequest(username) {
+            try {
+                const response = await fetch(`${API_BASE}/friends/decline`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ friendUsername: username })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    await loadFriendRequests();
+                } else {
+                    alert('Failed to decline friend request');
+                }
+            } catch (error) {
+                console.error('Error declining friend request:', error);
+                alert('Error declining friend request');
+            }
+        }
+        
+        async function removeFriend(username) {
+            if (!confirm(`Are you sure you want to remove ${username} from your friends?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/friends/remove`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ friendUsername: username })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    await loadFriends();
+                } else {
+                    alert('Failed to remove friend');
+                }
+            } catch (error) {
+                console.error('Error removing friend:', error);
+                alert('Error removing friend');
+            }
+        }
+        
+        function viewProfile(username) {
+            window.open(`profile.html?username=${username}`, '_blank');
+        }
+        
+        function inviteToGame(username) {
+            alert(`Game invitation feature coming soon! You'll be able to invite ${username} to play together.`);
+        }
+        
+        function showMessage(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="message ${type}">${message}</div>`;
+            
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
