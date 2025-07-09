@@ -21,11 +21,11 @@ app.use(express.json())
 app.use(express.static("public"))
 
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/ballup_game"
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://freefireacctsforsale:NBjDCvJegxoc5KBX@cluster0.g0delua.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 let db
 
 // JWT Secret
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-here"
+const JWT_SECRET = process.env.JWT_SECRET || "secreteidjdndjdjdhdnegeyeueysgshshshshs"
 
 // Initialize MongoDB connection
 async function initDatabase() {
