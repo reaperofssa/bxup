@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ball Up - Leaderboards</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #16213e 100%);
+            font-family: 'Orbitron', monospace;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #8a2be2, #da70d6, #9370db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(138, 43, 226, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.8)); }
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(138, 43, 226, 0.8);
+            border: 2px solid #da70d6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(218, 112, 214, 0.8);
+            box-shadow: 0 0 15px rgba(218, 112, 214, 0.6);
+        }
+        
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: rgba(138, 43, 226, 0.3);
+            border: 2px solid #8a2be2;
+            color: #da70d6;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: rgba(138, 43, 226, 0.8);
+            border-color: #da70d6;
+            color: white;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.6);
+        }
+        
+        .filter-btn:hover {
+            background: rgba(138, 43, 226, 0.6);
+        }
+        
+        .search-section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+        
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #da70d6;
+            box-shadow: 0 0 10px rgba(218, 112, 214, 0.5);
+        }
+        
+        .leaderboard-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #8a2be2;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
+        }
+        
+        .leaderboard-header {
+            display: grid;
+            grid-template-columns: 60px 1fr 120px 100px;
+            gap: 20px;
+            padding: 15px 20px;
+            border-bottom: 2px solid #8a2be2;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #da70d6;
+        }
+        
+        .leaderboard-item {
+            display: grid;
+            grid-template-columns: 60px 1fr 120px 100px;
+            gap: 20px;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+            transition: all 0.3s ease;
+            align-items: center;
+        }
+        
+        .leaderboard-item:hover {
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 8px;
+        }
+        
+        .rank {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .rank.top-1 { color: #ffd700; }
+        .rank.top-2 { color: #c0c0c0; }
+        .rank.top-3 { color: #cd7f32; }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #8a2be2, #da70d6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .player-name {
+            color: #da70d6;
+            font-weight: bold;
+        }
+        
+        .premium-badge {
+            color: #ffd700;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        
+        .player-rank {
+            font-size: 0.8rem;
+            color: #8a2be2;
+            margin-top: 2px;
+        }
+        
+        .score {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #da70d6;
+            text-align: right;
+        }
+        
+        .games-played {
+            font-size: 0.9rem;
+            color: #8a2be2;
+            text-align: right;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #da70d6;
+            font-size: 1.2rem;
+            margin: 50px 0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #8a2be2;
+            font-style: italic;
+            padding: 40px 20px;
+        }
+        
+        .my-rank {
+            background: rgba(218, 112, 214, 0.2);
+            border: 2px solid #da70d6;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .leaderboard-header,
+            .leaderboard-item {
+                grid-template-columns: 50px 1fr 80px;
+                gap: 10px;
+            }
+            
+            .games-played {
+                display: none;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="lobby.html" class="back-btn">← Back to Lobby</a>
+    
+    <div class="container">
+        <div class="header">
+            <div class="title">LEADERBOARDS</div>
+        </div>
+        
+        <div class="filters">
+            <button class="filter-btn active" onclick="changeFilter('allTime')">All Time</button>
+            <button class="filter-btn" onclick="changeFilter('weekly')">Weekly</button>
+            <button class="filter-btn" onclick="changeFilter('daily')">Daily</button>
+        </div>
+        
+        <div class="search-section">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search for a player..." onkeyup="searchPlayers()">
+        </div>
+        
+        <div class="leaderboard-container">
+            <div class="leaderboard-header">
+                <div>Rank</div>
+                <div>Player</div>
+                <div>Score</div>
+                <div class="games-played">Games</div>
+            </div>
+            
+            <div id="leaderboardContent">
+                <div class="loading">Loading leaderboard...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://reikermf-bxup.hf.space/api';
+        let currentFilter = 'allTime';
+        let allPlayers = [];
+        let currentUser = null;
+        
+        window.addEventListener('load', async () => {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+            }
+            
+            await loadLeaderboard();
+        });
+        
+        async function loadLeaderboard() {
+            try {
+                const response = await fetch(`${API_BASE}/leaderboard?type=${currentFilter}&limit=100`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    allPlayers = data.leaderboard;
+                    displayLeaderboard(allPlayers);
+                } else {
+                    document.getElementById('leaderboardContent').innerHTML = '<div class="empty-state">Error loading leaderboard</div>';
+                }
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                document.getElementById('leaderboardContent').innerHTML = '<div class="empty-state">Error loading leaderboard</div>';
+            }
+        }
+        
+        function displayLeaderboard(players) {
+            const container = document.getElementById('leaderboardContent');
+            
+            if (players.length === 0) {
+                container.innerHTML = '<div class="empty-state">No players found</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            players.forEach((player, index) => {
+                const rank = index + 1;
+                const isCurrentUser = currentUser && player.username === currentUser.username;
+                const rankClass = rank === 1 ? 'top-1' : rank === 2 ? 'top-2' : rank === 3 ? 'top-3' : '';
+                
+                html += `
+                    <div class="leaderboard-item ${isCurrentUser ? 'my-rank' : ''}">
+                        <div class="rank ${rankClass}">#${rank}</div>
+                        <div class="player-info">
+                            <div class="player-avatar">${player.username.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <div class="player-name">
+                                    ${player.username}
+                                    ${player.premium ? '<span class="premium-badge">✓</span>' : ''}
+                                </div>
+                                <div class="player-rank">${player.rank || 'Unranked'}</div>
+                            </div>
+                        </div>
+                        <div class="score">${player.bestScore || 0}</div>
+                        <div class="games-played">${player.gamesPlayed || 0}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function changeFilter(filter) {
+            currentFilter = filter;
+            
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Reload leaderboard
+            document.getElementById('leaderboardContent').innerHTML = '<div class="loading">Loading leaderboard...</div>';
+            loadLeaderboard();
+        }
+        
+        function searchPlayers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (searchTerm === '') {
+                displayLeaderboard(allPlayers);
+                return;
+            }
+            
+            const filteredPlayers = allPlayers.filter(player => 
+                player.username.toLowerCase().includes(searchTerm)
+            );
+            
+            displayLeaderboard(filteredPlayers);
+        }
+    </script>
+</body>
+</html>
