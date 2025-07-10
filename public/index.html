@@ -369,7 +369,7 @@
         </div>
         
         <div class="controls-overlay">
-            <button class="control-btn" id="musicBtn">🎵</button>
+            <button class="control-btn" id="musicBtnx">🎵</button>
             <button class="control-btn" id="pauseBtn">⏸️</button>
             <a href="lobby.html" class="control-btn">📋 Menu</a>
         </div>
@@ -1350,7 +1350,32 @@
         document.getElementById('musicBtn').addEventListener('click', () => {
             // Toggle music logic here
         });
-        
+        const audioContextX = new (window.AudioContext || window.webkitAudioContext)();
+let audioElementX;
+let trackX;
+
+document.getElementById("musicBtnx").addEventListener("click", () => {
+    if (!audioElementX) {
+        // You can replace this with any valid MP3 link
+        audioElementX = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+        audioElementX.loop = true;
+
+        trackX = audioContextX.createMediaElementSource(audioElementX);
+        trackX.connect(audioContextX.destination);
+
+        audioContextX.resume().then(() => {
+            audioElementX.play();
+        });
+    } else {
+        if (audioElementX.paused) {
+            audioContextX.resume().then(() => {
+                audioElementX.play();
+            });
+        } else {
+            audioElementX.pause();
+        }
+    }
+});
         document.getElementById('pauseBtn').addEventListener('click', () => {
             gamePaused = !gamePaused;
             document.getElementById('pauseBtn').textContent = gamePaused ? '▶️' : '⏸️';
